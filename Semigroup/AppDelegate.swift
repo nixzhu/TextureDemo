@@ -15,8 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow()
-        //let vc = TableNodeViewController()
-        let vc = CollectionNodeViewController()
+        let vc = TableNodeViewController()
+        //let vc = CollectionNodeViewController()
         let nc = UINavigationController(rootViewController: vc)
         window.rootViewController = nc
         self.window = window

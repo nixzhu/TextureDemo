@@ -34,19 +34,6 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         tableNode.backgroundColor = .white
     }
 
-    private var scrollToBottomTask: DispatchWorkItem?
-
-    private let tableLock = DispatchSemaphore(value: 1)
-    private func waitTableLockToDo(_ work: @escaping () -> Void) {
-        DispatchQueue.global().async {
-            _ = self.tableLock.wait(timeout: .distantFuture)
-            work()
-        }
-    }
-    private func unlockTableLock() {
-        tableLock.signal()
-    }
-
     @objc private func addItem() {
         let json1 = """
             {
@@ -101,24 +88,11 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         let feed = try! decoder.decode(Feed.self, from: data)
         let indexPath = IndexPath(row: feeds.count, section: 0)
         feeds.append(feed)
-        waitTableLockToDo { [weak self] in
-            DispatchQueue.main.async { [weak self] in
-                self?.tableNode.performBatchUpdates({ [weak self] in
-                    self?.tableNode.insertRows(at: [indexPath], with: .none)
-                }, completion: { [weak self] _ in
-                    self?.unlockTableLock()
-                })
-            }
-        }
-        waitTableLockToDo { [weak self] in
-            self?.scrollToBottomTask?.cancel()
-            let task = DispatchWorkItem { [weak self] in
-                self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: task)
-            self?.scrollToBottomTask = task
-            self?.unlockTableLock()
-        }
+        tableNode.performBatchUpdates({ [weak self] in
+            self?.tableNode.insertRows(at: [indexPath], with: .none)
+        }, completion: { [weak self] _ in
+            self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        })
     }
 }
 
