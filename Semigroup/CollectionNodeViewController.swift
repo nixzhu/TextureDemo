@@ -10,7 +10,12 @@ import UIKit
 import AsyncDisplayKit
 
 class CollectionNodeViewController: ASViewController<ASCollectionNode> {
-    var feeds: [Feed] = []
+    var feeds: [Feed] = [
+        randomFeed(),
+        randomFeed(),
+        randomFeed(),
+        randomFeed()
+    ]
     var collectionNode: ASCollectionNode!
 
     init() {
@@ -18,6 +23,7 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
         super.init(node: collectionNode)
 
         collectionNode.dataSource = self
+        collectionNode.delegate = self
         self.collectionNode = collectionNode
     }
 
@@ -44,9 +50,39 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
             self?.collectionNode.scrollToItem(at: indexPath, at: .bottom, animated: true)
         })
     }
+
+    private var isLoadingMoreFeeds: Bool = false
+    private func loadMoreFeeds() {
+        guard !isLoadingMoreFeeds else { return }
+        isLoadingMoreFeeds = true
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5) {
+            let newFeeds = [
+                randomFeed(),
+                randomFeed()
+            ]
+            let indexPaths = (self.feeds.count..<(self.feeds.count + newFeeds.count)).map {
+                IndexPath(row: $0, section: 0)
+            }
+            self.feeds.append(contentsOf: newFeeds)
+            DispatchQueue.main.async {
+                self.collectionNode.insertItems(at: indexPaths)
+                self.isLoadingMoreFeeds = false
+            }
+        }
+    }
 }
 
-extension CollectionNodeViewController: ASCollectionDataSource {
+extension CollectionNodeViewController: UIScrollViewDelegate {
+
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        let distance = scrollView.contentSize.height - (targetContentOffset.pointee.y + scrollView.bounds.height)
+        if distance < 100 {
+            loadMoreFeeds()
+        }
+    }
+}
+
+extension CollectionNodeViewController: ASCollectionDataSource, ASCollectionDelegate {
 
     func collectionNode(_ collectionNode: ASCollectionNode, numberOfItemsInSection section: Int) -> Int {
         return feeds.count
