@@ -93,4 +93,16 @@ extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
         let cell = FeedCellNode(feed: feeds[indexPath.row])
         return cell
     }
+
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let deleteAction = UITableViewRowAction(style: .default, title: "Delete") { action, index in
+            self.feeds.remove(at: indexPath.row)
+            self.tableNode.deleteRows(at: [indexPath], with: .automatic)
+        }
+        return [deleteAction]
+    }
 }

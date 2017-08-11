@@ -42,7 +42,7 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
 
     @objc private func addItem() {
         let feed = randomFeed()
-        let indexPath = IndexPath(row: feeds.count, section: 0)
+        let indexPath = IndexPath(item: feeds.count, section: 0)
         feeds.append(feed)
         collectionNode.performBatchUpdates({ [weak self] in
             self?.collectionNode.insertItems(at: [indexPath])
@@ -61,7 +61,7 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
                 randomFeed()
             ]
             let indexPaths = (self.feeds.count..<(self.feeds.count + newFeeds.count)).map {
-                IndexPath(row: $0, section: 0)
+                IndexPath(item: $0, section: 0)
             }
             self.feeds.append(contentsOf: newFeeds)
             DispatchQueue.main.async {
@@ -89,7 +89,7 @@ extension CollectionNodeViewController: ASCollectionDataSource, ASCollectionDele
     }
 
     func collectionNode(_ collectionNode: ASCollectionNode, nodeForItemAt indexPath: IndexPath) -> ASCellNode {
-        let cell = FeedCellNode(feed: feeds[indexPath.row])
+        let cell = FeedCellNode(feed: feeds[indexPath.item])
         return cell
     }
 }
