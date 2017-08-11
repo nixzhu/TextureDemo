@@ -28,7 +28,7 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Semigroup"
+        title = "Collection"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addItem))
 
         collectionNode.backgroundColor = .white

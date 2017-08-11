@@ -28,7 +28,7 @@ class TableNodeViewController: ASViewController<ASTableNode> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Semigroup"
+        title = "Table"
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addItem))
 
         tableNode.backgroundColor = .white
