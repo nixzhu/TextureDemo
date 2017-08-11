@@ -9,136 +9,7 @@
 import UIKit
 import AsyncDisplayKit
 
-struct User: Codable {
-    let nickname: String
-    let avatarURL: URL
-    private enum CodingKeys: String, CodingKey {
-        case nickname
-        case avatarURL = "avatar_url"
-    }
-}
-
-struct Feed: Codable {
-    let creator: User
-    let body: String
-    struct Attachment: Codable {
-        let imageURL: URL
-        private enum CodingKeys: String, CodingKey {
-            case imageURL = "image_url"
-        }
-    }
-    let attachments: [Attachment]
-    let createdAt: Date
-    private enum CodingKeys: String, CodingKey {
-        case creator
-        case body
-        case attachments
-        case createdAt = "created_at"
-    }
-}
-
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        return indices ~= index ? self[index] : nil
-    }
-}
-
-class FeedCellNode: ASCellNode {
-    let avatarImageNode = ASNetworkImageNode()
-    let nicknameTextNode = ASTextNode()
-    let createdAtTextNode = ASTextNode()
-    let bodyTextNode = ASTextNode()
-    let attachmentImageNode1 = ASNetworkImageNode()
-    let attachmentImageNode2 = ASNetworkImageNode()
-    let attachmentImageNode3 = ASNetworkImageNode()
-
-    let feed: Feed
-
-    init(feed: Feed) {
-        self.feed = feed
-        super.init()
-
-        backgroundColor = .white
-
-        avatarImageNode.url = feed.creator.avatarURL
-        nicknameTextNode.attributedText = NSAttributedString(string: feed.creator.nickname)
-        createdAtTextNode.attributedText = NSAttributedString(string: "\(feed.createdAt)")
-        bodyTextNode.attributedText = NSAttributedString(string: feed.body)
-        attachmentImageNode1.url = feed.attachments[safe: 0]?.imageURL
-        attachmentImageNode2.url = feed.attachments[safe: 1]?.imageURL
-        attachmentImageNode3.url = feed.attachments[safe: 2]?.imageURL
-
-        addSubnode(avatarImageNode)
-        addSubnode(nicknameTextNode)
-        addSubnode(createdAtTextNode)
-        addSubnode(bodyTextNode)
-        addSubnode(attachmentImageNode1)
-        addSubnode(attachmentImageNode2)
-        addSubnode(attachmentImageNode3)
-    }
-
-    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let stack1 = ASStackLayoutSpec(
-            direction: .vertical,
-            spacing: 10,
-            justifyContent: .start,
-            alignItems: .start,
-            children: [nicknameTextNode, createdAtTextNode]
-        )
-        avatarImageNode.style.preferredSize = CGSize(width: 40, height: 40)
-        let stack2 = ASStackLayoutSpec(
-            direction: .horizontal,
-            spacing: 10,
-            justifyContent: .start,
-            alignItems: .start,
-            children: [avatarImageNode, stack1]
-        )
-        let stack3 = ASStackLayoutSpec(
-            direction: .vertical,
-            spacing: 10,
-            justifyContent: .start,
-            alignItems: .start,
-            children: [stack2, bodyTextNode]
-        )
-        let stack5 = ASStackLayoutSpec(
-            direction: .vertical,
-            spacing: 10,
-            justifyContent: .start,
-            alignItems: .start,
-            children: [stack3]
-        )
-        if !feed.attachments.isEmpty {
-            let stack4 = ASStackLayoutSpec(
-                direction: .horizontal,
-                spacing: 10,
-                justifyContent: .start,
-                alignItems: .start,
-                children: []
-            )
-            if feed.attachments[safe: 0] != nil {
-                attachmentImageNode1.style.preferredSize = CGSize(width: 100, height: 100)
-                stack4.children?.append(attachmentImageNode1)
-            }
-            if feed.attachments[safe: 1] != nil {
-                attachmentImageNode2.style.preferredSize = CGSize(width: 100, height: 100)
-                stack4.children?.append(attachmentImageNode2)
-            }
-            if feed.attachments[safe: 2] != nil {
-                attachmentImageNode3.style.preferredSize = CGSize(width: 100, height: 100)
-                stack4.children?.append(attachmentImageNode3)
-            }
-            stack5.children?.append(stack4)
-        }
-        let inset = ASInsetLayoutSpec(
-            insets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
-            child: stack5
-        )
-        return inset
-    }
-}
-
-class ViewController: ASViewController<ASTableNode> {
-
+class TableNodeViewController: ASViewController<ASTableNode> {
     var feeds: [Feed] = []
     var tableNode: ASTableNode!
 
@@ -147,7 +18,6 @@ class ViewController: ASViewController<ASTableNode> {
         super.init(node: tableNode)
 
         tableNode.dataSource = self
-        tableNode.delegate = self
         self.tableNode = tableNode
     }
 
@@ -162,8 +32,6 @@ class ViewController: ASViewController<ASTableNode> {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addItem))
 
         tableNode.backgroundColor = .white
-
-        tableNode.view.tableFooterView = UIView()
     }
 
     private var scrollToBottomTask: DispatchWorkItem?
@@ -254,7 +122,7 @@ class ViewController: ASViewController<ASTableNode> {
     }
 }
 
-extension ViewController: ASTableDataSource, ASTableDelegate {
+extension TableNodeViewController: ASTableDataSource {
 
     func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
         return feeds.count
@@ -263,12 +131,5 @@ extension ViewController: ASTableDataSource, ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
         let cell = FeedCellNode(feed: feeds[indexPath.row])
         return cell
-    }
-
-    func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
-        defer {
-            tableNode.deselectRow(at: indexPath, animated: true)
-        }
-        print("did select row at: \(indexPath)")
     }
 }
