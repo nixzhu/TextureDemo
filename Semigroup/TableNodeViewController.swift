@@ -52,8 +52,8 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         let indexPath = IndexPath(row: feeds.count, section: 0)
         feeds.append(feed)
 
-        tableView.insertRows(at: [indexPath], with: .none)
-        //tableNode.insertRows(at: [indexPath], with: .none)
+        //tableView.insertRows(at: [indexPath], with: .none)
+        tableNode.insertRows(at: [indexPath], with: .none)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
