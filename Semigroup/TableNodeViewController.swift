@@ -64,8 +64,10 @@ class TableNodeViewController: ASViewController<ASTableNode> {
             return
         }
         isLoadingMoreFeeds = true
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1) {
             let newFeeds = [
+                randomFeed(),
+                randomFeed(),
                 randomFeed(),
                 randomFeed()
             ]

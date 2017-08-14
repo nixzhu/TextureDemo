@@ -55,11 +55,16 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
     }
 
     private var isLoadingMoreFeeds: Bool = false
-    private func loadMoreFeeds() {
-        guard !isLoadingMoreFeeds else { return }
+    private func loadMoreFeeds(completion: ((Bool) -> Void)? = nil) {
+        guard !isLoadingMoreFeeds else {
+            completion?(false)
+            return
+        }
         isLoadingMoreFeeds = true
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.1) {
             let newFeeds = [
+                randomFeed(),
+                randomFeed(),
                 randomFeed(),
                 randomFeed()
             ]
@@ -70,17 +75,8 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
             DispatchQueue.main.async {
                 self.collectionNode.insertItems(at: indexPaths)
                 self.isLoadingMoreFeeds = false
+                completion?(true)
             }
-        }
-    }
-}
-
-extension CollectionNodeViewController: UIScrollViewDelegate {
-
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let distance = scrollView.contentSize.height - (targetContentOffset.pointee.y + scrollView.bounds.height)
-        if distance < 100 {
-            loadMoreFeeds()
         }
     }
 }
@@ -94,5 +90,16 @@ extension CollectionNodeViewController: ASCollectionDataSource, ASCollectionDele
     func collectionNode(_ collectionNode: ASCollectionNode, nodeForItemAt indexPath: IndexPath) -> ASCellNode {
         let cell = FeedCellNode(feed: feeds[indexPath.item])
         return cell
+    }
+
+    func shouldBatchFetch(for collectionNode: ASCollectionNode) -> Bool {
+        return true
+    }
+
+    func collectionNode(_ collectionNode: ASCollectionNode, willBeginBatchFetchWith context: ASBatchContext) {
+        context.beginBatchFetching()
+        loadMoreFeeds {
+            context.completeBatchFetching($0)
+        }
     }
 }
