@@ -20,9 +20,6 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         randomFeed()
     ]
     var tableNode: ASTableNode!
-    var tableView: UITableView {
-        return tableNode.view
-    }
 
     init() {
         let tableNode = ASTableNode(style: .plain)
@@ -51,19 +48,13 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         let feed = randomFeed()
         let indexPath = IndexPath(row: feeds.count, section: 0)
         feeds.append(feed)
-
-        //tableView.insertRows(at: [indexPath], with: .none)
-        tableNode.insertRows(at: [indexPath], with: .none)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        }
-//        tableNode.performBatchUpdates({ [weak self] in
-//            self?.tableNode.insertRows(at: [indexPath], with: .none)
-//        }, completion: { [weak self] _ in
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-//                self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
-//            }
-//        })
+        tableNode.performBatchUpdates({ [weak self] in
+            self?.tableNode.insertRows(at: [indexPath], with: .none)
+        }, completion: { [weak self] _ in
+            DispatchQueue.main.async { [weak self] in
+                self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
+            }
+        })
     }
 
     private var isLoadingMoreFeeds: Bool = false
@@ -91,16 +82,6 @@ class TableNodeViewController: ASViewController<ASTableNode> {
     }
 }
 
-//extension TableNodeViewController: UIScrollViewDelegate {
-//
-//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-//        let distance = scrollView.contentSize.height - (targetContentOffset.pointee.y + scrollView.bounds.height)
-//        if distance < 100 {
-//            loadMoreFeeds()
-//        }
-//    }
-//}
-
 extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
 
     func tableNode(_ tableNode: ASTableNode, numberOfRowsInSection section: Int) -> Int {
@@ -124,14 +105,14 @@ extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
         return [deleteAction]
     }
 
-//    func shouldBatchFetch(for tableNode: ASTableNode) -> Bool {
-//        return true
-//    }
-//
-//    func tableNode(_ tableNode: ASTableNode, willBeginBatchFetchWith context: ASBatchContext) {
-//        context.beginBatchFetching()
-//        loadMoreFeeds {
-//            context.completeBatchFetching($0)
-//        }
-//    }
+    func shouldBatchFetch(for tableNode: ASTableNode) -> Bool {
+        return true
+    }
+
+    func tableNode(_ tableNode: ASTableNode, willBeginBatchFetchWith context: ASBatchContext) {
+        context.beginBatchFetching()
+        loadMoreFeeds {
+            context.completeBatchFetching($0)
+        }
+    }
 }
