@@ -14,6 +14,9 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         randomFeed(),
         randomFeed(),
         randomFeed(),
+        randomFeed(),
+        randomFeed(),
+        randomFeed(),
         randomFeed()
     ]
     var tableNode: ASTableNode!
@@ -45,11 +48,17 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         let feed = randomFeed()
         let indexPath = IndexPath(row: feeds.count, section: 0)
         feeds.append(feed)
-        tableNode.performBatchUpdates({ [weak self] in
-            self?.tableNode.insertRows(at: [indexPath], with: .none)
-        }, completion: { [weak self] _ in
+        tableNode.insertRows(at: [indexPath], with: .none)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
-        })
+        }
+//        tableNode.performBatchUpdates({ [weak self] in
+//            self?.tableNode.insertRows(at: [indexPath], with: .none)
+//        }, completion: { [weak self] _ in
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+//                self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
+//            }
+//        })
     }
 
     private var isLoadingMoreFeeds: Bool = false
@@ -91,6 +100,7 @@ extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
 
     func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
         let cell = FeedCellNode(feed: feeds[indexPath.row])
+        cell.neverShowPlaceholders = true
         return cell
     }
 

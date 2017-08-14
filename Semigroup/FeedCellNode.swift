@@ -34,13 +34,13 @@ class FeedCellNode: ASCellNode {
         attachmentImageNode2.url = feed.attachments[safe: 1]?.imageURL
         attachmentImageNode3.url = feed.attachments[safe: 2]?.imageURL
 
-        addSubnode(avatarImageNode)
+//        addSubnode(avatarImageNode)
         addSubnode(nicknameTextNode)
         addSubnode(createdAtTextNode)
         addSubnode(bodyTextNode)
-        addSubnode(attachmentImageNode1)
-        addSubnode(attachmentImageNode2)
-        addSubnode(attachmentImageNode3)
+//        addSubnode(attachmentImageNode1)
+//        addSubnode(attachmentImageNode2)
+//        addSubnode(attachmentImageNode3)
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
@@ -57,7 +57,8 @@ class FeedCellNode: ASCellNode {
             spacing: 10,
             justifyContent: .start,
             alignItems: .start,
-            children: [avatarImageNode, stack1]
+            //children: [avatarImageNode, stack1]
+            children: [stack1]
         )
         let stack3 = ASStackLayoutSpec(
             direction: .vertical,
@@ -73,28 +74,28 @@ class FeedCellNode: ASCellNode {
             alignItems: .start,
             children: [stack3]
         )
-        if !feed.attachments.isEmpty {
-            let stack4 = ASStackLayoutSpec(
-                direction: .horizontal,
-                spacing: 10,
-                justifyContent: .start,
-                alignItems: .start,
-                children: []
-            )
-            if feed.attachments[safe: 0] != nil {
-                attachmentImageNode1.style.preferredSize = CGSize(width: 100, height: 100)
-                stack4.children?.append(attachmentImageNode1)
-            }
-            if feed.attachments[safe: 1] != nil {
-                attachmentImageNode2.style.preferredSize = CGSize(width: 100, height: 100)
-                stack4.children?.append(attachmentImageNode2)
-            }
-            if feed.attachments[safe: 2] != nil {
-                attachmentImageNode3.style.preferredSize = CGSize(width: 100, height: 100)
-                stack4.children?.append(attachmentImageNode3)
-            }
-            stack5.children?.append(stack4)
-        }
+//        if !feed.attachments.isEmpty {
+//            let stack4 = ASStackLayoutSpec(
+//                direction: .horizontal,
+//                spacing: 10,
+//                justifyContent: .start,
+//                alignItems: .start,
+//                children: []
+//            )
+//            if feed.attachments[safe: 0] != nil {
+//                attachmentImageNode1.style.preferredSize = CGSize(width: 100, height: 100)
+//                stack4.children?.append(attachmentImageNode1)
+//            }
+//            if feed.attachments[safe: 1] != nil {
+//                attachmentImageNode2.style.preferredSize = CGSize(width: 100, height: 100)
+//                stack4.children?.append(attachmentImageNode2)
+//            }
+//            if feed.attachments[safe: 2] != nil {
+//                attachmentImageNode3.style.preferredSize = CGSize(width: 100, height: 100)
+//                stack4.children?.append(attachmentImageNode3)
+//            }
+//            stack5.children?.append(stack4)
+//        }
         let inset = ASInsetLayoutSpec(
             insets: UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10),
             child: stack5

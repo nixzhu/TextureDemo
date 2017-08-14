@@ -14,6 +14,9 @@ class CollectionNodeViewController: ASViewController<ASCollectionNode> {
         randomFeed(),
         randomFeed(),
         randomFeed(),
+        randomFeed(),
+        randomFeed(),
+        randomFeed(),
         randomFeed()
     ]
     var collectionNode: ASCollectionNode!
