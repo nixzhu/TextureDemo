@@ -26,13 +26,13 @@ class FeedCellNode: ASCellNode {
 
         backgroundColor = .white
 
-        avatarImageNode.url = feed.creator.avatarURL
+//        avatarImageNode.url = feed.creator.avatarURL
         nicknameTextNode.attributedText = NSAttributedString(string: feed.creator.nickname)
         createdAtTextNode.attributedText = NSAttributedString(string: "\(feed.createdAt)")
         bodyTextNode.attributedText = NSAttributedString(string: feed.body)
-        attachmentImageNode1.url = feed.attachments[safe: 0]?.imageURL
-        attachmentImageNode2.url = feed.attachments[safe: 1]?.imageURL
-        attachmentImageNode3.url = feed.attachments[safe: 2]?.imageURL
+//        attachmentImageNode1.url = feed.attachments[safe: 0]?.imageURL
+//        attachmentImageNode2.url = feed.attachments[safe: 1]?.imageURL
+//        attachmentImageNode3.url = feed.attachments[safe: 2]?.imageURL
 
 //        addSubnode(avatarImageNode)
         addSubnode(nicknameTextNode)
@@ -44,6 +44,8 @@ class FeedCellNode: ASCellNode {
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        nicknameTextNode.style.flexShrink = 1
+        createdAtTextNode.style.flexShrink = 1
         let stack1 = ASStackLayoutSpec(
             direction: .vertical,
             spacing: 10,
@@ -60,6 +62,7 @@ class FeedCellNode: ASCellNode {
             //children: [avatarImageNode, stack1]
             children: [stack1]
         )
+        bodyTextNode.style.flexShrink = 1
         let stack3 = ASStackLayoutSpec(
             direction: .vertical,
             spacing: 10,

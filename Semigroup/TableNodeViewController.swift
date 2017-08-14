@@ -20,6 +20,9 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         randomFeed()
     ]
     var tableNode: ASTableNode!
+    var tableView: UITableView {
+        return tableNode.view
+    }
 
     init() {
         let tableNode = ASTableNode(style: .plain)
@@ -48,7 +51,9 @@ class TableNodeViewController: ASViewController<ASTableNode> {
         let feed = randomFeed()
         let indexPath = IndexPath(row: feeds.count, section: 0)
         feeds.append(feed)
-        tableNode.insertRows(at: [indexPath], with: .none)
+
+        tableView.insertRows(at: [indexPath], with: .none)
+        //tableNode.insertRows(at: [indexPath], with: .none)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.tableNode.scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
@@ -62,8 +67,11 @@ class TableNodeViewController: ASViewController<ASTableNode> {
     }
 
     private var isLoadingMoreFeeds: Bool = false
-    private func loadMoreFeeds() {
-        guard !isLoadingMoreFeeds else { return }
+    private func loadMoreFeeds(completion: ((Bool) -> Void)? = nil) {
+        guard !isLoadingMoreFeeds else {
+            completion?(false)
+            return
+        }
         isLoadingMoreFeeds = true
         DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 0.5) {
             let newFeeds = [
@@ -77,20 +85,21 @@ class TableNodeViewController: ASViewController<ASTableNode> {
             DispatchQueue.main.async {
                 self.tableNode.insertRows(at: indexPaths, with: .automatic)
                 self.isLoadingMoreFeeds = false
+                completion?(true)
             }
         }
     }
 }
 
-extension TableNodeViewController: UIScrollViewDelegate {
-
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        let distance = scrollView.contentSize.height - (targetContentOffset.pointee.y + scrollView.bounds.height)
-        if distance < 100 {
-            loadMoreFeeds()
-        }
-    }
-}
+//extension TableNodeViewController: UIScrollViewDelegate {
+//
+//    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+//        let distance = scrollView.contentSize.height - (targetContentOffset.pointee.y + scrollView.bounds.height)
+//        if distance < 100 {
+//            loadMoreFeeds()
+//        }
+//    }
+//}
 
 extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
 
@@ -100,7 +109,6 @@ extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
 
     func tableNode(_ tableNode: ASTableNode, nodeForRowAt indexPath: IndexPath) -> ASCellNode {
         let cell = FeedCellNode(feed: feeds[indexPath.row])
-        cell.neverShowPlaceholders = true
         return cell
     }
 
@@ -115,4 +123,15 @@ extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
         }
         return [deleteAction]
     }
+
+//    func shouldBatchFetch(for tableNode: ASTableNode) -> Bool {
+//        return true
+//    }
+//
+//    func tableNode(_ tableNode: ASTableNode, willBeginBatchFetchWith context: ASBatchContext) {
+//        context.beginBatchFetching()
+//        loadMoreFeeds {
+//            context.completeBatchFetching($0)
+//        }
+//    }
 }
