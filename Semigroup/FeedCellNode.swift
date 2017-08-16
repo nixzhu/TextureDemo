@@ -34,13 +34,14 @@ class FeedCellNode: ASCellNode {
         attachmentImageNode2.url = feed.attachments[safe: 1]?.imageURL
         attachmentImageNode3.url = feed.attachments[safe: 2]?.imageURL
 
-        addSubnode(avatarImageNode)
-        addSubnode(nicknameTextNode)
-        addSubnode(createdAtTextNode)
-        addSubnode(bodyTextNode)
-        addSubnode(attachmentImageNode1)
-        addSubnode(attachmentImageNode2)
-        addSubnode(attachmentImageNode3)
+        automaticallyManagesSubnodes = true
+//        addSubnode(avatarImageNode)
+//        addSubnode(nicknameTextNode)
+//        addSubnode(createdAtTextNode)
+//        addSubnode(bodyTextNode)
+//        addSubnode(attachmentImageNode1)
+//        addSubnode(attachmentImageNode2)
+//        addSubnode(attachmentImageNode3)
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
