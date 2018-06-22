@@ -107,6 +107,12 @@ extension TableNodeViewController: ASTableDataSource, ASTableDelegate {
         return [deleteAction]
     }
 
+    func tableNode(_ tableNode: ASTableNode, didSelectRowAt indexPath: IndexPath) {
+        defer {
+            tableNode.deselectRow(at: indexPath, animated: true)
+        }
+    }
+
     func shouldBatchFetch(for tableNode: ASTableNode) -> Bool {
         return true
     }

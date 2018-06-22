@@ -35,13 +35,37 @@ class FeedCellNode: ASCellNode {
         attachmentImageNode3.url = feed.attachments[safe: 2]?.imageURL
 
         automaticallyManagesSubnodes = true
-//        addSubnode(avatarImageNode)
-//        addSubnode(nicknameTextNode)
-//        addSubnode(createdAtTextNode)
-//        addSubnode(bodyTextNode)
-//        addSubnode(attachmentImageNode1)
-//        addSubnode(attachmentImageNode2)
-//        addSubnode(attachmentImageNode3)
+    }
+
+    override func didLoad() {
+        super.didLoad()
+
+        let longPress = UILongPressGestureRecognizer(
+            target: self,
+            action: #selector(showMenu(_:))
+        )
+        view.addGestureRecognizer(longPress)
+    }
+
+    override func canBecomeFirstResponder() -> Bool {
+        return true
+    }
+
+    @objc private func showMenu(_ sender: UILongPressGestureRecognizer) {
+        guard sender.state == .began else { return }
+        view.becomeFirstResponder()
+        let menuItem = UIMenuItem(
+            title: "Test",
+            action: #selector(menuTest)
+        )
+        let menuController = UIMenuController.shared
+        menuController.menuItems = [menuItem]
+        menuController.setTargetRect(frame, in: view)
+        menuController.setMenuVisible(true, animated: true)
+    }
+
+    @objc private func menuTest() {
+        print("menuTest")
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
