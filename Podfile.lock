@@ -1,36 +1,43 @@
 PODS:
-  - PINCache (3.0.1-beta.5):
-    - PINCache/Arc-exception-safe (= 3.0.1-beta.5)
-    - PINCache/Core (= 3.0.1-beta.5)
-  - PINCache/Arc-exception-safe (3.0.1-beta.5):
+  - PINCache (3.0.1-beta.6):
+    - PINCache/Arc-exception-safe (= 3.0.1-beta.6)
+    - PINCache/Core (= 3.0.1-beta.6)
+  - PINCache/Arc-exception-safe (3.0.1-beta.6):
     - PINCache/Core
-  - PINCache/Core (3.0.1-beta.5):
-    - PINOperation (= 1.0.3)
-  - PINOperation (1.0.3)
-  - PINRemoteImage/Core (3.0.0-beta.11):
+  - PINCache/Core (3.0.1-beta.6):
+    - PINOperation (~> 1.1.0)
+  - PINOperation (1.1.1)
+  - PINRemoteImage/Core (3.0.0-beta.13):
     - PINOperation
-  - PINRemoteImage/iOS (3.0.0-beta.11):
+  - PINRemoteImage/iOS (3.0.0-beta.13):
     - PINRemoteImage/Core
-  - PINRemoteImage/PINCache (3.0.0-beta.11):
-    - PINCache (= 3.0.1-beta.5)
+  - PINRemoteImage/PINCache (3.0.0-beta.13):
+    - PINCache (= 3.0.1-beta.6)
     - PINRemoteImage/Core
-  - Texture (2.3.4):
-    - Texture/PINRemoteImage (= 2.3.4)
-  - Texture/Core (2.3.4)
-  - Texture/PINRemoteImage (2.3.4):
-    - PINRemoteImage/iOS (= 3.0.0-beta.11)
+  - Texture (2.6):
+    - Texture/PINRemoteImage (= 2.6)
+  - Texture/Core (2.6)
+  - Texture/PINRemoteImage (2.6):
+    - PINRemoteImage/iOS (= 3.0.0-beta.13)
     - PINRemoteImage/PINCache
     - Texture/Core
 
 DEPENDENCIES:
-  - Texture
+  - Texture (= 2.6)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - PINCache
+    - PINOperation
+    - PINRemoteImage
+    - Texture
 
 SPEC CHECKSUMS:
-  PINCache: 98e7b1ef782824ad231ade51987c218b758c30d8
-  PINOperation: ac23db44796d4a564ecf9b5ea7163510f579b71d
-  PINRemoteImage: d71988f11914a050d6d4cf51efc4ad1de8c0a9d8
-  Texture: 8cf0872fe33328c20d7e6c1fcbf1f23a82162f2f
+  PINCache: d195fdba255283f7e9900a55e3cced377f431f9b
+  PINOperation: a6219e6fc9db9c269eb7a7b871ac193bcf400aac
+  PINRemoteImage: d6d51c5d2adda55f1ce30c96e850b6c4ebd2856a
+  Texture: 7249074582daf75e524e59df5428b66b8e8db0e4
 
-PODFILE CHECKSUM: cd8a18dcefff493e3b208b46990d6090536b725e
+PODFILE CHECKSUM: 193b4dadbfb0ec2fdab6e37f599f81cfd97b5097
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.5.3
